@@ -971,16 +971,77 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                                                                     </div>
                                                                 </div>
                                                             </div>
+															<!-- ============ Tab 4: 配置 - 采集报表 (unitClasses==2) ============ -->
+															<div id="reportUnitAcqConfigTab" title="Config" name="configAcq" style="height:100%;" visible="false">
+															    <div id="acqReportConfigSubTabs" class="mini-tabs"
+															         style="width:100%;height:100%;" activeIndex="0" tabPosition="top"
+															         onactivechanged="onAcqReportConfigSubTabChanged">
 															
+															        <!-- ============== 子 Tab 1: 单井报表 (singleDeviceReport) ============== -->
+															        <div title="Single Well Report" name="acqSingleWellReport" style="height:100%;">
+															            <div class="mini-splitter" style="width:100%;height:100%;" vertical="true">
 															
+															                <!-- 模板表：center，占 40% -->
+															                <div size="40%" showCollapseButton="false">
+															                    <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
+															                        <div class="grid-title-bar" style="flex-shrink:0;">
+															                            <span id="acqSingleWellTemplateTitle"></span>
+															                        </div>
+															                        <div style="flex:1;overflow:hidden;padding:4px;">
+															                            <div id="ReportUnitClasses2SingleWellRangeReportTemplateTableInfoDiv_id"
+															                                 style="width:100%;height:100%;"></div>
+															                        </div>
+															                    </div>
+															                </div>
 															
+															                <!-- 内容表：south，占 60% -->
+															                <div size="60%" showCollapseButton="true" collapseDirection="bottom">
+															                    <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
+															                        <div class="grid-title-bar" style="flex-shrink:0;">
+															                            <span id="acqSingleWellContentTitle"></span>
+															                        </div>
+															                        <div style="flex:1;overflow:hidden;padding:4px;">
+															                            <div id="ReportUnitClasses2SingleWellRangeReportContentConfigTableInfoDiv_id"
+															                                 style="width:100%;height:100%;"></div>
+															                        </div>
+															                    </div>
+															                </div>
+															            </div>
+															        </div>
 															
+															        <!-- ============== 子 Tab 2: 区域报表 (areaReport) ============== -->
+															        <div title="Area Report" name="acqAreaReport" style="height:100%;">
+															            <div class="mini-splitter" style="width:100%;height:100%;" vertical="true">
 															
+															                <!-- 模板表：center，占 40% -->
+															                <div size="40%" showCollapseButton="false">
+															                    <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
+															                        <div class="grid-title-bar" style="flex-shrink:0;">
+															                            <span id="acqAreaTemplateTitle"></span>
+															                        </div>
+															                        <div style="flex:1;overflow:hidden;padding:4px;">
+															                            <div id="ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoDiv_id"
+															                                 style="width:100%;height:100%;"></div>
+															                        </div>
+															                    </div>
+															                </div>
 															
-															
-															
-															
-															
+															                <!-- 内容表：south，占 60% -->
+															                <div size="60%" showCollapseButton="true" collapseDirection="bottom">
+															                    <div style="padding:4px;height:100%;background:#fafafa;display:flex;flex-direction:column;">
+															                        <div class="grid-title-bar" style="flex-shrink:0;">
+															                            <span id="acqAreaContentTitle"></span>
+															                        </div>
+															                        <div style="flex:1;overflow:hidden;padding:4px;">
+															                            <div id="ModbusProtocolProductionReportUnitClasses2ContentConfigTableInfoDiv_id"
+															                                 style="width:100%;height:100%;"></div>
+															                        </div>
+															                    </div>
+															                </div>
+															            </div>
+															        </div>
+															    </div>
+															</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1493,7 +1554,7 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
             var reportUnitRightTabs = mini.get('reportUnitRightTabs');
             if (reportUnitRightTabs) {
                 var tabs = reportUnitRightTabs.getTabs();
-                if (tabs && tabs.length >= 3) {
+                if (tabs && tabs.length >= 4) {
                     reportUnitRightTabs.updateTab(tabs[0], {
                         title: _loginUserLanguageResource.properties
                     });
@@ -1501,6 +1562,9 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                         title: _loginUserLanguageResource.config
                     });
                     reportUnitRightTabs.updateTab(tabs[2], {
+                        title: _loginUserLanguageResource.config
+                    });
+                    reportUnitRightTabs.updateTab(tabs[3], {
                         title: _loginUserLanguageResource.config
                     });
                 }
@@ -1544,6 +1608,16 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                     });
                 }
             }
+            
+         	// ★ 采集报表（unitClasses==2）外层子 Tab + 网格标题
+            var acqSub = mini.get('acqReportConfigSubTabs');
+            if (acqSub) {
+                var acqTabs = acqSub.getTabs();
+                if (acqTabs && acqTabs.length >= 2) {
+                    acqSub.updateTab(acqTabs[0], { title: _loginUserLanguageResource.singleDeviceReport });
+                    acqSub.updateTab(acqTabs[1], { title: _loginUserLanguageResource.areaReport });
+                }
+            }
 
 
 
@@ -1565,7 +1639,11 @@ if(otherStaticResourceTimestamp == null) otherStaticResourceTimestamp = "";
                 'areaReportTemplateTitle': 'areaDailyReportTemplate',
                 'areaReportContentTitle': 'areaDailyReportContentConfig',
                 'hydroReportTemplateTitle': 'reportTemplate',
-                'hydroReportContentTitle': 'reportContentConfig'
+                'hydroReportContentTitle': 'reportContentConfig',
+                'acqSingleWellTemplateTitle'  : 'deviceDailyReportTemplate',
+                'acqSingleWellContentTitle'   : 'deviceDailyReportContentConfig',
+                'acqAreaTemplateTitle'        : 'areaDailyReportTemplate',
+                'acqAreaContentTitle'         : 'areaDailyReportContentConfig'
             };
             for (var id in titleMap) {
                 var el = document.getElementById(id);

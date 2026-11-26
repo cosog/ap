@@ -7,6 +7,8 @@ var _currentReportUnitNode = null;
 var _currentReportStandardSubTab = 'singleWellReport'; // singleWellReport / areaReport
 var _currentSingleWellReportTab = 'hourlyReport';      // hourlyReport / dailyReport
 var _currentAreaReportTab = 'dailyReport';             // 区域报表内部子 Tab
+var _currentAcqReportSubTab = 'acqSingleWellReport';  // acqSingleWellReport / acqAreaReport
+var _currentAcqReportType   = 0;                        // 0:单井  1:区域
 
 // 新增报表单元后高亮标记（由添加窗口设置）
 var _newReportUnitObjectName = null;
@@ -21,6 +23,10 @@ var singleWellDailyReportTemplateHandsontableHelper = null;
 var singleWellDailyReportTemplateContentHandsontableHelper = null;
 var hydrologicalWellDailyReportTemplateHandsontableHelper = null;
 var hydrologicalWellDailyReportContentHandsontableHelper = null;
+var singleWellRangeClasses2ReportTemplateHandsontableHelper         = null;
+var singleWellRangeClasses2ReportTemplateContentHandsontableHelper  = null;
+var productionReportTemplateClasses2HandsontableHelper              = null;
+var productionReportTemplateClasses2ContentHandsontableHelper       = null;
 
 function clearAllReportUnitData() {
     safeDestroyHotHelpers([
@@ -32,7 +38,11 @@ function clearAllReportUnitData() {
         'singleWellDailyReportTemplateHandsontableHelper',
         'singleWellDailyReportTemplateContentHandsontableHelper',
         'hydrologicalWellDailyReportTemplateHandsontableHelper',
-        'hydrologicalWellDailyReportContentHandsontableHelper'
+        'hydrologicalWellDailyReportContentHandsontableHelper',
+        'singleWellRangeClasses2ReportTemplateHandsontableHelper',
+        'singleWellRangeClasses2ReportTemplateContentHandsontableHelper',
+        'productionReportTemplateClasses2HandsontableHelper',
+        'productionReportTemplateClasses2ContentHandsontableHelper'
     ]);
 
     clearContainers([
@@ -44,7 +54,11 @@ function clearAllReportUnitData() {
         'areaReportTemplateContainer',
         'areaReportContentContainer',
         'hydroReportTemplateContainer',
-        'hydroReportContentContainer'
+        'hydroReportContentContainer',
+        'ReportUnitClasses2SingleWellRangeReportTemplateTableInfoDiv_id',
+        'ReportUnitClasses2SingleWellRangeReportContentConfigTableInfoDiv_id',
+        'ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoDiv_id',
+        'ModbusProtocolProductionReportUnitClasses2ContentConfigTableInfoDiv_id'
     ]);
 
     // 三个模板列表 mini-datagrid 也要清空
@@ -60,11 +74,13 @@ function clearAllReportUnitData() {
         var propsTab = tabs.getTab('props');
         var stdTab   = tabs.getTab('configStandard');
         var hyTab    = tabs.getTab('configHydrological');
+        var acqTab    = tabs.getTab('configAcq');
+        
         if (propsTab) tabs.updateTab(propsTab, { visible: false });
         if (stdTab)   tabs.updateTab(stdTab,   { visible: false });
         if (hyTab)    tabs.updateTab(hyTab,    { visible: false });
+        if (acqTab)    tabs.updateTab(acqTab,    { visible: false });
     }
-
     // ★ 重置选中状态
     _currentReportUnitNode = null;
     _newReportUnitObjectName = null;
@@ -210,15 +226,18 @@ function updateReportUnitConfigTabs(unitClasses) {
 
     var standardTab = tabs.getTab('configStandard');
     var hydroTab = tabs.getTab('configHydrological');
+    var acqTab = tabs.getTab('configAcq');
     var propsTab = tabs.getTab('props');
-    if (!standardTab || !hydroTab || !propsTab) return;
+    if (!standardTab || !hydroTab || !propsTab || !acqTab) return;
 
     var uc = parseInt(unitClasses, 10);
     var showStandard = (uc === 0);
     var showHydro = (uc === 1);
+    var showAcq = (uc === 2);
 
     tabs.updateTab(standardTab, { visible: showStandard });
     tabs.updateTab(hydroTab, { visible: showHydro });
+    tabs.updateTab(acqTab, { visible: showAcq });
 
     var activeTab = tabs.getActiveTab();
     var activeName = activeTab ? activeTab.name : '';
@@ -230,6 +249,8 @@ function updateReportUnitConfigTabs(unitClasses) {
         keepActive = true;
     } else if (activeName === 'configHydrological' && showHydro) {
         keepActive = true;
+    } else if (activeName === 'configAcq' && showAcq) {
+        keepActive = true;
     }
 
     if (!keepActive) {
@@ -237,7 +258,9 @@ function updateReportUnitConfigTabs(unitClasses) {
             tabs.activeTab(standardTab);
         } else if (showHydro) {
             tabs.activeTab(hydroTab);
-        } else {
+        } else if (showAcq) {
+            tabs.activeTab(acqTab);
+        }  else {
             tabs.activeTab(propsTab);
         }
     }
@@ -258,6 +281,8 @@ function onReportUnitDetailTabChanged(e) {
         loadStandardConfigByCurrentSubTab(_currentReportUnitNode);
     } else if (tab.name === 'configHydrological') {
         loadHydrologicalConfig(_currentReportUnitNode);
+    } else if (tab.name === 'configAcq') {
+        loadAcqReportConfig(_currentReportUnitNode);
     }
 }
 
@@ -291,6 +316,17 @@ function onAreaReportSubTabChanged(e) {
     loadStandardConfigByCurrentSubTab(_currentReportUnitNode);
 }
 
+//采集报表子标签切换事件
+function onAcqReportConfigSubTabChanged(e) {
+    if (isInitializing) return;
+    if (!_currentReportUnitNode) return;
+    var tab = e.tab;
+    if (!tab) return;
+    _currentAcqReportSubTab = tab.name;
+    _currentAcqReportType   = (tab.name === 'acqSingleWellReport') ? 0 : 1;
+    loadAcqReportConfig(_currentReportUnitNode);
+}
+
 // ================================================================
 // 8. 根据"当前激活的所有 Tab"决定加载对应数据
 // ================================================================
@@ -310,6 +346,8 @@ function loadReportUnitDataByCurrentTab() {
         loadStandardConfigByCurrentSubTab(node);
     } else if (mainName === 'configHydrological') {
         loadHydrologicalConfig(node);
+    } else if (mainName === 'configAcq') {
+        loadAcqReportConfig(node);
     }
 }
 
@@ -1005,6 +1043,17 @@ var HydrologicalWellDailyReportTemplateHandsontableHelper = {
     }
 };
 
+var SingleWellRangeClasses2ReportTemplateHandsontableHelper = {
+	    createNew: function (divid, templateData) {
+	        return _createReportTemplateHandsontableHelper(divid, templateData);
+	    }
+	};
+var ProductionReportTemplateClasses2HandsontableHelper = {
+	    createNew: function (divid, templateData) {
+	        return _createReportTemplateHandsontableHelper(divid, templateData);
+	    }
+	};
+
 // ================================================================
 // 报表模板内容表格 - 通用工厂
 // ================================================================
@@ -1174,6 +1223,13 @@ window.refreshReportUnitContentTable = function (reportType, unitClasses) {
     if (uc === 1) {
         loadHydrologicalReportContent(node);
         return;
+    }else if (parseInt(uc) === 2) {
+        if (reportType === 1){
+        	createAcqAreaContentTable(node);
+        }else{
+        	createAcqSingleWellContentTable(node);
+        }                 
+        return;
     }
 
     var grid = null;
@@ -1204,6 +1260,20 @@ window.refreshReportUnitContentTable = function (reportType, unitClasses) {
 // 根据当前激活的三级 Tab 返回 reportType
 // ================================================================
 function getActiveReportType() {
+	 var mainTabs = mini.get('reportUnitRightTabs');
+	 if (mainTabs) {
+	        var activeMain = mainTabs.getActiveTab();
+	        if (activeMain && activeMain.name === 'configAcq') {
+	            var sub = mini.get('acqReportConfigSubTabs');
+	            if (sub) {
+	                var activeSub = sub.getActiveTab();
+	                if (activeSub && activeSub.name === 'acqAreaReport') return 1;   // 区域
+	            }
+	            return 0;   // 单井
+	        }
+	    }
+	
+	
     var stdSub = mini.get('reportStandardConfigSubTabs');
     if (!stdSub) return -1;
     var stdActive = stdSub.getActiveTab();
@@ -1679,3 +1749,348 @@ function openImportReportUnitWindow() {
         }
     });
 }
+
+//================================================================
+//采集报表配置
+//================================================================
+function loadAcqReportConfig(node) {
+ if (!node || node.classes !== 1) return;
+ var sub = mini.get('acqReportConfigSubTabs');
+ if (!sub) return;
+ var active = sub.getActiveTab();
+ if (!active) return;
+ _currentAcqReportSubTab = active.name;
+
+ if (active.name === 'acqSingleWellReport') {
+     createAcqSingleWellTemplateTable(node);
+     createAcqSingleWellContentTable(node);
+ } else if (active.name === 'acqAreaReport') {
+     createAcqAreaTemplateTable(node);
+     createAcqAreaContentTable(node);
+ }
+}
+
+//---------- 1. 单井报表 - 模板表 ----------
+function createAcqSingleWellTemplateTable(node) {
+ if (singleWellRangeClasses2ReportTemplateHandsontableHelper != null) {
+     if (singleWellRangeClasses2ReportTemplateHandsontableHelper.hot != undefined) {
+         singleWellRangeClasses2ReportTemplateHandsontableHelper.hot.destroy();
+     }
+     singleWellRangeClasses2ReportTemplateHandsontableHelper = null;
+ }
+
+ var calculateType = node.calculateType || 0;
+ var unitId = 0, unitName = node.text || '', classes = (node.classes != null) ? node.classes : 0;
+ if (classes === 1) unitId = node.id;
+
+ $.ajax({
+     type: 'POST',
+     url: context + '/acquisitionUnitManagerController/getClasses2ReportTemplateData',
+     data: { classes: classes, unitId: unitId, reportType: 0 },
+     dataType: 'json',
+     success: function (result) {
+         var titleEl = document.getElementById('acqSingleWellTemplateTitle');
+         if (titleEl) {
+             titleEl.innerText = (classes == 0)
+                 ? (_loginUserLanguageResource.reportTemplate || 'Report Template')
+                 : (unitName + '/' + (_loginUserLanguageResource.reportTemplate || 'Report Template'));
+         }
+         if (singleWellRangeClasses2ReportTemplateHandsontableHelper == null
+             || singleWellRangeClasses2ReportTemplateHandsontableHelper.hot == undefined) {
+             singleWellRangeClasses2ReportTemplateHandsontableHelper = SingleWellRangeClasses2ReportTemplateHandsontableHelper.createNew('ReportUnitClasses2SingleWellRangeReportTemplateTableInfoDiv_id',result);
+             singleWellRangeClasses2ReportTemplateHandsontableHelper.createTable();
+         }
+     },
+     error: function () { mini.alert(_loginUserLanguageResource.ajaxError || 'AJAX Error'); }
+ });
+}
+
+//---------- 2. 单井报表 - 内容表 ----------
+function createAcqSingleWellContentTable(node) {
+ if (singleWellRangeClasses2ReportTemplateContentHandsontableHelper != null) {
+     if (singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot != undefined) {
+         singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot.destroy();
+     }
+     singleWellRangeClasses2ReportTemplateContentHandsontableHelper = null;
+ }
+
+ var calculateType = node.calculateType || 0;
+ var unitId = 0, unitName = node.text || '', classes = (node.classes != null) ? node.classes : 0;
+ if (classes === 0) {
+     if (node.children && node.children.length > 0) unitId = node.children[0].id;
+ } else if (classes === 1) {
+     unitId = node.id;
+ }
+
+ $.ajax({
+     type: 'POST',
+     url: context + '/acquisitionUnitManagerController/getReportUnitTotalCalItemsConfigData',
+     data: { calculateType: calculateType, reportType: 0,
+             unitId: unitId, templateCode: '', classes: classes, unitClasses: 2 },
+     dataType: 'json',
+     success: function (result) {
+         var titleEl = document.getElementById('acqSingleWellContentTitle');
+         if (titleEl) {
+             titleEl.innerText = (classes == 0)
+                 ? (_loginUserLanguageResource.deviceDailyReportContentConfig || 'Daily Report Content')
+                 : (unitName + '/' + (_loginUserLanguageResource.deviceDailyReportContentConfig || 'Daily Report Content'));
+         }
+         if (singleWellRangeClasses2ReportTemplateContentHandsontableHelper == null
+             || singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot == undefined) {
+             singleWellRangeClasses2ReportTemplateContentHandsontableHelper = SingleWellRangeClasses2ReportTemplateContentHandsontableHelper.createNew('ReportUnitClasses2SingleWellRangeReportContentConfigTableInfoDiv_id');
+             _initContentHelperColumns(singleWellRangeClasses2ReportTemplateContentHandsontableHelper, result, 0);
+             singleWellRangeClasses2ReportTemplateContentHandsontableHelper.createTable(result.totalRoot);
+         } else {
+             singleWellRangeClasses2ReportTemplateContentHandsontableHelper.hot.loadData(result.totalRoot);
+         }
+     },
+     error: function () { mini.alert(_loginUserLanguageResource.ajaxError || 'AJAX Error'); }
+ });
+}
+
+//---------- 3. 区域报表 - 模板表 ----------
+function createAcqAreaTemplateTable(node) {
+ if (productionReportTemplateClasses2HandsontableHelper != null) {
+     if (productionReportTemplateClasses2HandsontableHelper.hot != undefined) {
+         productionReportTemplateClasses2HandsontableHelper.hot.destroy();
+     }
+     productionReportTemplateClasses2HandsontableHelper = null;
+ }
+
+ var calculateType = node.calculateType || 0;
+ var unitId = 0, unitName = node.text || '', classes = (node.classes != null) ? node.classes : 0;
+ if (classes === 1) unitId = node.id;
+
+ $.ajax({
+     type: 'POST',
+     url: context + '/acquisitionUnitManagerController/getClasses2ReportTemplateData',
+     data: { classes: classes, unitId: unitId, reportType: 1 },
+     dataType: 'json',
+     success: function (result) {
+         var titleEl = document.getElementById('acqAreaTemplateTitle');
+         if (titleEl) {
+             titleEl.innerText = (classes == 0)
+                 ? (_loginUserLanguageResource.reportTemplate || 'Report Template')
+                 : (unitName + '/' + (_loginUserLanguageResource.reportTemplate || 'Report Template'));
+         }
+         if (productionReportTemplateClasses2HandsontableHelper == null
+             || productionReportTemplateClasses2HandsontableHelper.hot == undefined) {
+             productionReportTemplateClasses2HandsontableHelper = ProductionReportTemplateClasses2HandsontableHelper.createNew('ModbusProtocolReportUnitClasses2ProductionTemplateTableInfoDiv_id',result);
+             productionReportTemplateClasses2HandsontableHelper.createTable();
+         }
+     },
+     error: function () { mini.alert(_loginUserLanguageResource.ajaxError || 'AJAX Error'); }
+ });
+}
+
+//---------- 4. 区域报表 - 内容表 ----------
+function createAcqAreaContentTable(node) {
+ if (productionReportTemplateClasses2ContentHandsontableHelper != null) {
+     if (productionReportTemplateClasses2ContentHandsontableHelper.hot != undefined) {
+         productionReportTemplateClasses2ContentHandsontableHelper.hot.destroy();
+     }
+     productionReportTemplateClasses2ContentHandsontableHelper = null;
+ }
+
+ var calculateType = node.calculateType || 0;
+ var unitId = 0, unitName = node.text || '', classes = (node.classes != null) ? node.classes : 0;
+ if (classes === 0) {
+     if (node.children && node.children.length > 0) unitId = node.children[0].id;
+ } else if (classes === 1) {
+     unitId = node.id;
+ }
+
+ $.ajax({
+     type: 'POST',
+     url: context + '/acquisitionUnitManagerController/getReportUnitTotalCalItemsConfigData',
+     data: { calculateType: calculateType, reportType: 1,
+             unitId: unitId, templateCode: '', classes: classes, unitClasses: 2 },
+     dataType: 'json',
+     success: function (result) {
+         var titleEl = document.getElementById('acqAreaContentTitle');
+         if (titleEl) {
+             titleEl.innerText = (classes == 0)
+                 ? (_loginUserLanguageResource.areaDailyReportContentConfig || 'Area Report Content')
+                 : (unitName + '/' + (_loginUserLanguageResource.areaDailyReportContentConfig || 'Area Report Content'));
+         }
+         if (productionReportTemplateClasses2ContentHandsontableHelper == null
+             || productionReportTemplateClasses2ContentHandsontableHelper.hot == undefined) {
+             productionReportTemplateClasses2ContentHandsontableHelper = ProductionReportTemplateClasses2ContentHandsontableHelper.createNew('ModbusProtocolProductionReportUnitClasses2ContentConfigTableInfoDiv_id');
+             _initContentHelperColumns(productionReportTemplateClasses2ContentHandsontableHelper, result, 1);
+             productionReportTemplateClasses2ContentHandsontableHelper.createTable(result.totalRoot);
+         } else {
+             productionReportTemplateClasses2ContentHandsontableHelper.hot.loadData(result.totalRoot);
+         }
+     },
+     error: function () { mini.alert(_loginUserLanguageResource.ajaxError || 'AJAX Error'); }
+ });
+}
+
+//================================================================
+//采集报表：单井报表 - 内容表
+//================================================================
+var SingleWellRangeClasses2ReportTemplateContentHandsontableHelper = {
+ createNew: function (divid) {
+     var helper = {};
+     helper.hot = null;
+     helper.result = null;
+     helper.divid = divid;
+     helper.validresult = true;
+     helper.colHeaders = [];
+     helper.columns = [];
+     helper.AllData = [];
+
+     helper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+         Handsontable.renderers.TextRenderer.apply(this, arguments);
+         if (value != null) {
+             var arr = String(value).split(';');
+             if (arr.length == 3) td.style.backgroundColor = '#' + arr[2];
+         }
+         td.style.whiteSpace = 'nowrap';
+         td.style.overflow = 'hidden';
+         td.style.textOverflow = 'ellipsis';
+     };
+
+     helper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+         Handsontable.renderers.TextRenderer.apply(this, arguments);
+         td.style.whiteSpace = 'nowrap';
+         td.style.overflow = 'hidden';
+         td.style.textOverflow = 'ellipsis';
+     };
+
+     helper.createTable = function (data) {
+         $('#' + helper.divid).empty();
+         var hotElement = document.querySelector('#' + helper.divid);
+         var hiddenRowCols = (helper.result && helper.result.template && helper.result.template.hiddenColumns) || [];
+         helper.hot = new Handsontable(hotElement, {
+             licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+             theme: 'ht-theme-classic',
+             data: data,
+             hiddenColumns: { columns: [], indicators: false, copyPasteEnabled: false },
+             hiddenRows: { rows: hiddenRowCols, indicators: false, copyPasteEnabled: false },
+             colWidths: [50, 150, 150, 80, 90, 120, 80, 60, 110, 80],
+             columns: helper.columns,
+             fixedColumnsStart: 2,
+             stretchH: 'all', autoWrapRow: true, rowHeaders: false,
+             colHeaders: helper.colHeaders,
+             columnSorting: true, sortIndicator: true,
+             manualColumnResize: true, manualRowResize: true, filters: true,
+             renderAllRows: true, search: true,
+             contextMenu: { items: {
+                 "copy": { name: _loginUserLanguageResource.contextMenu_copy },
+                 "cut":  { name: _loginUserLanguageResource.contextMenu_cut }
+             }},
+             cells: function (row, col, prop) {
+                 var cellProperties = { editor: false };
+                 var visualColIndex = this.instance.toVisualColumn(col);
+                 if (visualColIndex == 8) {                        // reportCurveConfShowValue 列
+                     cellProperties.renderer = helper.addCurveBg;
+                 } else {
+                     var colDef = helper.columns[visualColIndex] || {};
+                     if (colDef.type != 'dropdown' && colDef.type != 'checkbox'
+                         && (prop || '').toUpperCase() != 'CONFIG') {
+                         cellProperties.renderer = helper.addCellStyle;
+                     }
+                     // ★ config 列不覆盖 renderer（保留 renderReportUnitContentConfig）
+                 }
+                 return cellProperties;
+             },
+             afterOnCellMouseOver: function (event, coords, TD) {
+                 if (coords.col >= 0 && coords.row >= 0 && helper.hot != undefined) {
+                     var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
+                     if (isNotVal(rawValue)) TD.title = rawValue;
+                 }
+             }
+         });
+     };
+
+     helper.saveData = function () {};
+     helper.clearContainer = function () { helper.AllData = []; };
+     return helper;
+ }
+};
+
+//================================================================
+//采集报表：区域报表 - 内容表
+//列定义由 _initContentHelperColumns(helper, result, 1) 提供
+//================================================================
+var ProductionReportTemplateClasses2ContentHandsontableHelper = {
+ createNew: function (divid) {
+     var helper = {};
+     helper.hot = null;
+     helper.result = null;
+     helper.divid = divid;
+     helper.validresult = true;
+     helper.colHeaders = [];
+     helper.columns = [];
+     helper.AllData = [];
+
+     helper.addCurveBg = function (instance, td, row, col, prop, value, cellProperties) {
+         Handsontable.renderers.TextRenderer.apply(this, arguments);
+         if (value != null) {
+             var arr = String(value).split(';');
+             if (arr.length == 3) td.style.backgroundColor = '#' + arr[2];
+         }
+         td.style.whiteSpace = 'nowrap';
+         td.style.overflow = 'hidden';
+         td.style.textOverflow = 'ellipsis';
+     };
+
+     helper.addCellStyle = function (instance, td, row, col, prop, value, cellProperties) {
+         Handsontable.renderers.TextRenderer.apply(this, arguments);
+         td.style.whiteSpace = 'nowrap';
+         td.style.overflow = 'hidden';
+         td.style.textOverflow = 'ellipsis';
+     };
+
+     helper.createTable = function (data) {
+         $('#' + helper.divid).empty();
+         var hotElement = document.querySelector('#' + helper.divid);
+         var hiddenRowCols = (helper.result && helper.result.template && helper.result.template.hiddenColumns) || [];
+         helper.hot = new Handsontable(hotElement, {
+             licenseKey: '96860-f3be6-b4941-2bd32-fd62b',
+             theme: 'ht-theme-classic',
+             data: data,
+             hiddenColumns: { columns: [], indicators: false, copyPasteEnabled: false },
+             hiddenRows: { rows: hiddenRowCols, indicators: false, copyPasteEnabled: false },
+             colWidths: [50, 150, 150, 60, 90, 120, 80, 60, 50, 50, 110, 110, 60],
+             columns: helper.columns,
+             fixedColumnsStart: 2,
+             stretchH: 'all', autoWrapRow: true, rowHeaders: false,
+             colHeaders: helper.colHeaders,
+             columnSorting: true, sortIndicator: true,
+             manualColumnResize: true, manualRowResize: true, filters: true,
+             renderAllRows: true, search: true,
+             contextMenu: { items: {
+                 "copy": { name: _loginUserLanguageResource.contextMenu_copy },
+                 "cut":  { name: _loginUserLanguageResource.contextMenu_cut }
+             }},
+             cells: function (row, col, prop) {
+                 var cellProperties = { editor: false };
+                 var visualColIndex = this.instance.toVisualColumn(col);
+                 if (visualColIndex == 10) {                       // reportCurveConfShowValue 列
+                     cellProperties.renderer = helper.addCurveBg;
+                 } else {
+                     var colDef = helper.columns[visualColIndex] || {};
+                     if (colDef.type != 'dropdown' && colDef.type != 'checkbox'
+                         && (prop || '').toUpperCase() != 'CONFIG') {
+                         cellProperties.renderer = helper.addCellStyle;
+                     }
+                     // ★ config 列不覆盖 renderer
+                 }
+                 return cellProperties;
+             },
+             afterOnCellMouseOver: function (event, coords, TD) {
+                 if (coords.col >= 0 && coords.row >= 0 && helper.hot != undefined) {
+                     var rawValue = helper.hot.getDataAtCell(coords.row, coords.col);
+                     if (isNotVal(rawValue)) TD.title = rawValue;
+                 }
+             }
+         });
+     };
+
+     helper.saveData = function () {};
+     helper.clearContainer = function () { helper.AllData = []; };
+     return helper;
+ }
+};
